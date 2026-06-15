@@ -4,6 +4,16 @@ pipeline {
     }
 
     stages {
+        stage('Setup') {
+            steps {
+                // Instalar make y otras dependencias necesarias en el agente
+                sh '''
+                  apt-get update
+                  apt-get install -y make git nodejs npm
+                '''
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'make build'
@@ -49,7 +59,7 @@ pipeline {
 
     post {
         failure {
-            mail to: 'reinaldo.diaz@comunidadunir.com',
+            mail to: 'reinaldodiazmontealegre@gmail.com',
                  subject: "Fallo en ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: """El pipeline ha finalizado con errores, por favor valida.
 
