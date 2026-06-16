@@ -59,14 +59,17 @@ pipeline {
     }
     post {
         failure {
-            mail to: 'reinaldodiazmontealegre@gmail.com',
-                 subject: "Fallo en ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: """El pipeline ha finalizado con errores, por favor valida.
+            emailext(
+                to: 'reinaldodiazmontealegre@gmail.com',
+                subject: "Fallo en ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """El pipeline ha finalizado con errores, por favor valida.
+
 Trabajo: ${env.JOB_NAME}
-Ejecucion: ${env.BUILD_NUMBER}
+Ejecución: ${env.BUILD_NUMBER}
 Resultado: ${currentBuild.currentResult}
 URL: ${env.BUILD_URL}
 """
+            )
         }
     }
 }
