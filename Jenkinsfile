@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // ← NUEVO: instala Docker CLI dentro del contenedor node:18
+                // Instala Docker CLI dentro del contenedor node:18
                 sh '''
                     apt-get update -y
                     apt-get install -y docker.io
@@ -50,6 +50,12 @@ pipeline {
                 }
             }
         }
+        stage('Simular Error') {
+            steps {
+                // Fuerza un fallo controlado
+                sh 'exit 1'
+            }
+        }
     }
     post {
         failure {
@@ -63,4 +69,4 @@ URL: ${env.BUILD_URL}
 """
         }
     }
-
+}
