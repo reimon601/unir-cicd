@@ -2,12 +2,18 @@ pipeline {
     agent {
         docker {
             image 'node:18'
-            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'  // ← CAMBIO: agrega el socket de Docker
+            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
     stages {
         stage('Build') {
             steps {
+                // ← NUEVO: instala Docker CLI dentro del contenedor node:18
+                sh '''
+                    apt-get update -y
+                    apt-get install -y docker.io
+                    docker build -t calculator-app .
+                '''
                 sh 'make build'
             }
         }
@@ -47,7 +53,7 @@ pipeline {
     }
     post {
         failure {
-            mail to: 'reinaldodiazmontealegre@gmail.com',
+            mail to: 'reinaldo.diaz@comunidadunir.com',
                  subject: "Fallo en ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: """El pipeline ha finalizado con errores, por favor valida.
 Trabajo: ${env.JOB_NAME}
