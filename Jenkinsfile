@@ -59,7 +59,7 @@ pipeline {
     }
     post {
         failure {
-            mail to: 'reinaldo.diaz@comunidadunir.com',
+            mail to: 'reinaldodiazmontealegre@gmail.com',
                  subject: "Fallo en ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: """El pipeline ha finalizado con errores, por favor valida.
 Trabajo: ${env.JOB_NAME}
