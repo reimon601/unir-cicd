@@ -1,18 +1,16 @@
 pipeline {
     agent {
         docker {
-            image 'node:18'   // Imagen oficial de Node.js que incluye make y npm
-            args '-u root'    // Ejecutar como root si necesitas permisos adicionales
+            image 'node:18'
+            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'  // ← CAMBIO: agrega el socket de Docker
         }
     }
-
     stages {
         stage('Build') {
             steps {
                 sh 'make build'
             }
         }
-
         stage('Unit tests') {
             steps {
                 sh 'make test-unit'
@@ -24,7 +22,6 @@ pipeline {
                 }
             }
         }
-
         stage('API tests') {
             steps {
                 sh 'make test-api'
@@ -36,7 +33,6 @@ pipeline {
                 }
             }
         }
-
         stage('E2E tests') {
             steps {
                 sh 'make test-e2e'
@@ -49,13 +45,11 @@ pipeline {
             }
         }
     }
-
     post {
         failure {
-            mail to: 'reinaldo.diaz@comunidadunir.com',
+            mail to: 'reinaldodiazmontealegre@gmail.com',
                  subject: "Fallo en ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: """El pipeline ha finalizado con errores, por favor valida.
-
 Trabajo: ${env.JOB_NAME}
 Ejecucion: ${env.BUILD_NUMBER}
 Resultado: ${currentBuild.currentResult}
